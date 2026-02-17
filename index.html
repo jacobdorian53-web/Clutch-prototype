@@ -453,21 +453,24 @@
                         }
                         
                         if (inGap) {
-                            ring.passed = true;
-                            // Success particles
-                            for (let j = 0; j < 12; j++) {
-                                const pAngle = playerAngle + (Math.random() - 0.5) * 0.5;
-                                const pRadius = ring.radius + (Math.random() - 0.5) * 20;
+                            // Success! Explode the ring with particles all around it
+                            const ringColor = ring.color;
+                            const ringRadius = ring.radius;
+                            for (let j = 0; j < 30; j++) {
+                                const pAngle = (j / 30) * Math.PI * 2 + Math.random() * 0.2;
                                 particles.push({
-                                    x: centerX + Math.cos(pAngle) * pRadius,
-                                    y: centerY + Math.sin(pAngle) * pRadius,
-                                    vx: (Math.random() - 0.5) * 100,
-                                    vy: (Math.random() - 0.5) * 100,
+                                    x: centerX + Math.cos(pAngle) * ringRadius,
+                                    y: centerY + Math.sin(pAngle) * ringRadius,
+                                    vx: Math.cos(pAngle) * (50 + Math.random() * 100),
+                                    vy: Math.sin(pAngle) * (50 + Math.random() * 100),
                                     life: 1,
-                                    color: ring.color,
-                                    radius: 3 + Math.random() * 5
+                                    color: ringColor,
+                                    radius: 4 + Math.random() * 6
                                 });
                             }
+                            // Remove the ring immediately
+                            rings.splice(i, 1);
+                            continue;
                         } else {
                             // Hit the ring - death
                             die();
