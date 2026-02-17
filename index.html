@@ -437,9 +437,10 @@
                 // Check if player is dashing through this ring
                 if (player.dashing && !ring.passed) {
                     const dashingOutward = playerRadius > player.baseOrbitRadius;
-                    const nearRing = Math.abs(playerRadius - ring.radius) < ring.thickness * 2 + player.radius;
+                    // Wider detection: player radius is beyond ring (crossed through it)
+                    const crossedRing = playerRadius > ring.radius && playerRadius < ring.radius + minDim * 0.15;
                     
-                    if (nearRing && dashingOutward) {
+                    if (crossedRing && dashingOutward) {
                         // Check if player is in a gap
                         let inGap = false;
                         for (const gap of ring.gaps) {
