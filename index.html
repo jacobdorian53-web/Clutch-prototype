@@ -52,15 +52,108 @@
                 0 0 20px #00ffff,
                 0 0 40px #00ffff,
                 0 0 80px #00ffff;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         
-        .subtitle {
-            font-size: clamp(14px, 4vw, 24px);
-            color: rgba(255, 255, 255, 0.7);
-            letter-spacing: 0.3em;
+        .tagline {
+            font-size: clamp(12px, 3vw, 18px);
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.4em;
             text-transform: uppercase;
-            animation: pulse 1.5s ease-in-out infinite;
+            margin-bottom: 50px;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: auto;
+        }
+        
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px 50px;
+            color: #fff;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 280px;
+            text-align: center;
+        }
+        
+        .menu-btn:hover, .menu-btn:active {
+            transform: scale(1.05);
+        }
+        
+        .menu-btn.practice {
+            border-color: #00ffff;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .menu-btn.practice:hover, .menu-btn.practice:active {
+            background: rgba(0, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+        
+        .menu-btn.daily {
+            border-color: #ff00ff;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+        
+        .menu-btn.daily:hover, .menu-btn.daily:active {
+            background: rgba(255, 0, 255, 0.15);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+        }
+        
+        .menu-btn.daily.used {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
+        .menu-subtitle {
+            font-size: clamp(10px, 2.5vw, 13px);
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.1em;
+            margin-top: 8px;
+            font-weight: 400;
+            text-transform: none;
+        }
+        
+        .daily-status {
+            margin-top: 20px;
+            font-size: clamp(11px, 2.5vw, 14px);
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.1em;
+        }
+        
+        .daily-status.completed {
+            color: #22c55e;
+        }
+        
+        .best-scores {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .best-label {
+            font-size: clamp(10px, 2.5vw, 12px);
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .best-value {
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #ff00ff;
+            letter-spacing: 0.1em;
         }
         
         .countdown {
@@ -89,17 +182,36 @@
         }
         
         .level-label {
-            font-size: clamp(12px, 3vw, 16px);
+            font-size: clamp(10px, 2.5vw, 14px);
             color: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.2em;
             text-transform: uppercase;
         }
         
         .level-number {
-            font-size: clamp(32px, 8vw, 48px);
+            font-size: clamp(28px, 7vw, 42px);
             font-weight: 900;
             color: #ff00ff;
             text-shadow: 0 0 20px #ff00ff;
+        }
+        
+        .mode-badge {
+            font-size: clamp(8px, 2vw, 11px);
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.1em;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .mode-badge.practice {
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+        }
+        
+        .mode-badge.daily {
+            background: rgba(255, 0, 255, 0.2);
+            color: #ff00ff;
         }
         
         .timer-display {
@@ -107,14 +219,14 @@
         }
         
         .timer-label {
-            font-size: clamp(12px, 3vw, 16px);
+            font-size: clamp(10px, 2.5vw, 14px);
             color: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.2em;
             text-transform: uppercase;
         }
         
         .timer-value {
-            font-size: clamp(32px, 8vw, 48px);
+            font-size: clamp(28px, 7vw, 42px);
             font-weight: 900;
             color: #00ffff;
             text-shadow: 0 0 20px #00ffff;
@@ -125,7 +237,7 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 60%;
+            width: 70%;
             max-width: 400px;
         }
         
@@ -147,7 +259,7 @@
         .progress-label {
             text-align: center;
             margin-top: 8px;
-            font-size: clamp(10px, 2.5vw, 14px);
+            font-size: clamp(10px, 2.5vw, 13px);
             color: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.1em;
         }
@@ -158,7 +270,7 @@
         }
         
         .level-complete-title {
-            font-size: clamp(24px, 6vw, 40px);
+            font-size: clamp(20px, 5vw, 36px);
             color: #22c55e;
             letter-spacing: 0.3em;
             text-transform: uppercase;
@@ -167,7 +279,7 @@
         }
         
         .level-complete-number {
-            font-size: clamp(64px, 20vw, 150px);
+            font-size: clamp(60px, 18vw, 140px);
             font-weight: 900;
             color: #ff00ff;
             text-shadow: 
@@ -178,7 +290,7 @@
         }
         
         .level-complete-next {
-            font-size: clamp(14px, 4vw, 20px);
+            font-size: clamp(12px, 3vw, 18px);
             color: rgba(255, 255, 255, 0.7);
             margin-top: 30px;
             letter-spacing: 0.2em;
@@ -196,7 +308,7 @@
         }
         
         .death-title {
-            font-size: clamp(32px, 10vw, 72px);
+            font-size: clamp(28px, 8vw, 60px);
             font-weight: 900;
             color: #ff0066;
             text-shadow: 
@@ -207,13 +319,13 @@
         }
         
         .death-level {
-            font-size: clamp(20px, 5vw, 32px);
+            font-size: clamp(16px, 4vw, 26px);
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 10px;
         }
         
         .death-reached {
-            font-size: clamp(48px, 12vw, 96px);
+            font-size: clamp(42px, 11vw, 80px);
             font-weight: 900;
             color: #ff00ff;
             text-shadow: 0 0 20px #ff00ff;
@@ -221,7 +333,7 @@
         }
         
         .death-label {
-            font-size: clamp(12px, 3vw, 18px);
+            font-size: clamp(11px, 2.5vw, 16px);
             color: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.3em;
             text-transform: uppercase;
@@ -229,14 +341,94 @@
         }
         
         .high-score {
-            font-size: clamp(14px, 4vw, 20px);
+            font-size: clamp(13px, 3.5vw, 18px);
             color: #00ffff;
             letter-spacing: 0.2em;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
         }
         
         .new-record {
             animation: flash 0.5s ease-in-out infinite;
+        }
+        
+        .death-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            pointer-events: auto;
+        }
+        
+        .death-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px 40px;
+            color: #fff;
+            font-size: clamp(14px, 3.5vw, 18px);
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .death-btn:hover, .death-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.03);
+        }
+        
+        .death-btn.retry {
+            border-color: #00ffff;
+            color: #00ffff;
+        }
+        
+        .death-btn.menu {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Daily complete */
+        .daily-complete {
+            text-align: center;
+        }
+        
+        .daily-complete-title {
+            font-size: clamp(18px, 4.5vw, 28px);
+            color: #22c55e;
+            letter-spacing: 0.2em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px #22c55e;
+        }
+        
+        .daily-result {
+            font-size: clamp(48px, 14vw, 100px);
+            font-weight: 900;
+            color: #ff00ff;
+            text-shadow: 0 0 30px #ff00ff;
+            margin-bottom: 10px;
+        }
+        
+        .daily-date {
+            font-size: clamp(12px, 3vw, 16px);
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.15em;
+            margin-bottom: 30px;
+        }
+        
+        .share-btn {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            color: #000;
+            font-size: clamp(14px, 3.5vw, 18px);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            pointer-events: auto;
+            margin-bottom: 20px;
         }
         
         @keyframes pulse {
@@ -253,13 +445,12 @@
             display: none !important;
         }
         
-        /* Combo display */
         .combo-display {
             position: absolute;
-            top: 50%;
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(24px, 6vw, 40px);
+            font-size: clamp(22px, 5.5vw, 36px);
             font-weight: 900;
             color: #ffff00;
             text-shadow: 0 0 20px #ffff00;
@@ -283,9 +474,25 @@
 <body>
     <canvas id="game"></canvas>
     <div id="ui">
+        <!-- Title/Menu Screen -->
         <div id="title-screen">
             <div class="title">CLUTCH</div>
-            <div class="subtitle">Tap to Start</div>
+            <div class="tagline">How far can you go?</div>
+            <div class="menu-buttons">
+                <button class="menu-btn practice" onclick="startMode('practice')">
+                    Practice Mode
+                    <div class="menu-subtitle">Unlimited attempts</div>
+                </button>
+                <button class="menu-btn daily" id="daily-btn" onclick="startMode('daily')">
+                    Daily Challenge
+                    <div class="menu-subtitle">One shot. Prove yourself.</div>
+                </button>
+            </div>
+            <div class="daily-status" id="daily-status"></div>
+            <div class="best-scores">
+                <div class="best-label">Best Level</div>
+                <div class="best-value" id="best-level">Level 1</div>
+            </div>
         </div>
         
         <div id="countdown-screen" class="hidden">
@@ -297,6 +504,7 @@
                 <div class="level-display">
                     <div class="level-label">Level</div>
                     <div class="level-number" id="level-num">1</div>
+                    <div class="mode-badge practice" id="mode-badge">PRACTICE</div>
                 </div>
                 <div class="timer-display">
                     <div class="timer-label">Time</div>
@@ -316,7 +524,7 @@
             <div class="level-complete">
                 <div class="level-complete-title">Level Complete!</div>
                 <div class="level-complete-number" id="completed-level">1</div>
-                <div class="level-complete-next">Get ready for the next level...</div>
+                <div class="level-complete-next">Get ready...</div>
             </div>
         </div>
         
@@ -325,15 +533,27 @@
                 <div class="death-title">CLUTCH</div>
                 <div class="death-level">You reached</div>
                 <div class="death-reached" id="final-level">Level 1</div>
-                <div class="death-label">Back to Level 1</div>
+                <div class="death-label">Restarting from Level 1</div>
                 <div class="high-score" id="high-score">BEST: Level 1</div>
-                <div class="subtitle">Tap to Retry</div>
+                <div class="death-buttons">
+                    <button class="death-btn retry" onclick="retryGame()">Try Again</button>
+                    <button class="death-btn menu" onclick="backToMenu()">Menu</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="daily-complete-screen" class="hidden">
+            <div class="daily-complete">
+                <div class="daily-complete-title">Daily Challenge Complete!</div>
+                <div class="daily-result" id="daily-result">Level 5</div>
+                <div class="daily-date" id="daily-date">February 17, 2026</div>
+                <button class="share-btn" onclick="shareDaily()">📤 Share Result</button>
+                <button class="death-btn menu" onclick="backToMenu()">Back to Menu</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Canvas setup
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
         
@@ -343,6 +563,7 @@
         const countdownNumber = document.getElementById('countdown-number');
         const gameUI = document.getElementById('game-ui');
         const levelNum = document.getElementById('level-num');
+        const modeBadge = document.getElementById('mode-badge');
         const timerDisplay = document.getElementById('timer');
         const progressFill = document.getElementById('progress-fill');
         const progressLabel = document.getElementById('progress-label');
@@ -352,9 +573,16 @@
         const deathScreen = document.getElementById('death-screen');
         const finalLevel = document.getElementById('final-level');
         const highScoreDisplay = document.getElementById('high-score');
+        const dailyCompleteScreen = document.getElementById('daily-complete-screen');
+        const dailyResult = document.getElementById('daily-result');
+        const dailyDate = document.getElementById('daily-date');
+        const dailyBtn = document.getElementById('daily-btn');
+        const dailyStatus = document.getElementById('daily-status');
+        const bestLevelDisplay = document.getElementById('best-level');
         
         // Game state
-        let gameState = 'title'; // title, countdown, playing, levelComplete, dead
+        let gameState = 'title';
+        let gameMode = 'practice'; // 'practice' or 'daily'
         let currentLevel = 1;
         let levelTime = 0;
         let highestLevel = parseInt(localStorage.getItem('clutch-highest-level')) || 1;
@@ -363,22 +591,26 @@
         let combo = 0;
         let comboTimer = 0;
         
+        // Daily challenge
+        let dailySeed = 0;
+        let dailyCompleted = false;
+        let dailyBestLevel = 0;
+        
         // Level definitions
         const levels = [
-            null, // index 0 unused
+            null,
             { duration: 15, ringSpeed: 70, spawnInterval: 2.5, gapSize: 0.22, maxGaps: 2, rotationSpeed: 1.3, name: "Warm Up" },
-            { duration: 20, ringSpeed: 85, spawnInterval: 2.2, gapSize: 0.20, maxGaps: 2, rotationSpeed: 1.4, name: "Getting Started" },
-            { duration: 25, ringSpeed: 100, spawnInterval: 2.0, gapSize: 0.18, maxGaps: 3, rotationSpeed: 1.5, name: "Finding Rhythm" },
-            { duration: 30, ringSpeed: 115, spawnInterval: 1.8, gapSize: 0.17, maxGaps: 3, rotationSpeed: 1.6, reverseChance: 0.3, name: "Reversal" },
-            { duration: 35, ringSpeed: 130, spawnInterval: 1.6, gapSize: 0.16, maxGaps: 3, rotationSpeed: 1.7, reverseChance: 0.4, name: "Chaos" },
-            { duration: 40, ringSpeed: 145, spawnInterval: 1.4, gapSize: 0.15, maxGaps: 4, rotationSpeed: 1.8, reverseChance: 0.5, doubleRing: true, name: "Double Trouble" },
-            { duration: 45, ringSpeed: 160, spawnInterval: 1.3, gapSize: 0.14, maxGaps: 4, rotationSpeed: 1.9, reverseChance: 0.5, doubleRing: true, name: "Nightmare" },
-            { duration: 50, ringSpeed: 175, spawnInterval: 1.2, gapSize: 0.13, maxGaps: 4, rotationSpeed: 2.0, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "Impossible" },
-            { duration: 55, ringSpeed: 190, spawnInterval: 1.1, gapSize: 0.12, maxGaps: 5, rotationSpeed: 2.1, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "Legendary" },
-            { duration: 60, ringSpeed: 200, spawnInterval: 1.0, gapSize: 0.11, maxGaps: 5, rotationSpeed: 2.2, reverseChance: 0.7, doubleRing: true, shiftingGaps: true, name: "CLUTCH MASTER" }
+            { duration: 18, ringSpeed: 85, spawnInterval: 2.2, gapSize: 0.20, maxGaps: 2, rotationSpeed: 1.4, name: "Getting Started" },
+            { duration: 22, ringSpeed: 100, spawnInterval: 2.0, gapSize: 0.18, maxGaps: 3, rotationSpeed: 1.5, name: "Finding Rhythm" },
+            { duration: 26, ringSpeed: 115, spawnInterval: 1.8, gapSize: 0.17, maxGaps: 3, rotationSpeed: 1.6, reverseChance: 0.2, name: "Reversal" },
+            { duration: 30, ringSpeed: 130, spawnInterval: 1.6, gapSize: 0.16, maxGaps: 3, rotationSpeed: 1.7, reverseChance: 0.3, name: "Chaos" },
+            { duration: 34, ringSpeed: 145, spawnInterval: 1.5, gapSize: 0.15, maxGaps: 4, rotationSpeed: 1.8, reverseChance: 0.4, doubleRing: true, name: "Double Trouble" },
+            { duration: 38, ringSpeed: 160, spawnInterval: 1.4, gapSize: 0.14, maxGaps: 4, rotationSpeed: 1.9, reverseChance: 0.4, doubleRing: true, name: "Nightmare" },
+            { duration: 42, ringSpeed: 175, spawnInterval: 1.3, gapSize: 0.13, maxGaps: 4, rotationSpeed: 2.0, reverseChance: 0.5, doubleRing: true, shiftingGaps: true, name: "Impossible" },
+            { duration: 46, ringSpeed: 185, spawnInterval: 1.2, gapSize: 0.12, maxGaps: 5, rotationSpeed: 2.1, reverseChance: 0.5, doubleRing: true, shiftingGaps: true, name: "Legendary" },
+            { duration: 50, ringSpeed: 200, spawnInterval: 1.1, gapSize: 0.11, maxGaps: 5, rotationSpeed: 2.2, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "CLUTCH MASTER" }
         ];
         
-        // Color themes per level
         const levelThemes = [
             null,
             { primary: '#00ffff', secondary: '#ff00ff', bg: '#0a0a0a' },
@@ -393,10 +625,8 @@
             { primary: '#ffffff', secondary: '#ff00ff', bg: '#050505' }
         ];
         
-        // Screen
         let width, height, centerX, centerY, minDim;
         
-        // Player
         const player = {
             angle: 0,
             orbitRadius: 0,
@@ -414,15 +644,56 @@
             trail: []
         };
         
-        // Rings
         let rings = [];
         let ringSpawnTimer = 0;
-        
-        // Visual effects
         let screenShake = { x: 0, y: 0, intensity: 0 };
         let particles = [];
+        let rng = Math.random;
         
-        // Get current level config
+        // Seeded RNG for daily challenge
+        function seededRandom(seed) {
+            let s = seed;
+            return function() {
+                s = Math.sin(s * 9999) * 10000;
+                return s - Math.floor(s);
+            };
+        }
+        
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+        
+        function getTodaySeed() {
+            const str = getTodayString();
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash);
+        }
+        
+        function checkDailyStatus() {
+            const today = getTodayString();
+            const lastDaily = localStorage.getItem('clutch-daily-date');
+            const lastResult = parseInt(localStorage.getItem('clutch-daily-result')) || 0;
+            
+            if (lastDaily === today) {
+                dailyCompleted = true;
+                dailyBestLevel = lastResult;
+                dailyBtn.classList.add('used');
+                dailyStatus.textContent = `Today's result: Level ${lastResult}`;
+                dailyStatus.classList.add('completed');
+            } else {
+                dailyCompleted = false;
+                dailyBestLevel = 0;
+                dailyBtn.classList.remove('used');
+                dailyStatus.textContent = "Today's challenge awaits!";
+                dailyStatus.classList.remove('completed');
+            }
+        }
+        
         function getLevelConfig() {
             const idx = Math.min(currentLevel, levels.length - 1);
             return levels[idx];
@@ -433,7 +704,6 @@
             return levelThemes[idx];
         }
         
-        // Resize handler
         function resize() {
             width = window.innerWidth;
             height = window.innerHeight;
@@ -442,7 +712,6 @@
             centerX = width / 2;
             centerY = height / 2;
             minDim = Math.min(width, height);
-            
             player.baseOrbitRadius = minDim * 0.12;
             player.orbitRadius = player.baseOrbitRadius;
             player.radius = minDim * 0.025;
@@ -451,17 +720,10 @@
         resize();
         window.addEventListener('resize', resize);
         
-        // Input
         function handleInput(e) {
             e.preventDefault();
-            
-            if (gameState === 'title') {
-                startCountdown();
-            } else if (gameState === 'playing' && !player.dashing) {
+            if (gameState === 'playing' && !player.dashing) {
                 startDash();
-            } else if (gameState === 'dead') {
-                resetGame();
-                startCountdown();
             }
         }
         
@@ -471,12 +733,27 @@
             if (e.code === 'Space') handleInput(e);
         });
         
-        // Game functions
+        function startMode(mode) {
+            gameMode = mode;
+            
+            if (mode === 'daily') {
+                if (dailyCompleted) return;
+                dailySeed = getTodaySeed();
+                rng = seededRandom(dailySeed);
+            } else {
+                rng = Math.random;
+            }
+            
+            currentLevel = 1;
+            startCountdown();
+        }
+        
         function startCountdown() {
             gameState = 'countdown';
             titleScreen.classList.add('hidden');
             deathScreen.classList.add('hidden');
             levelCompleteScreen.classList.add('hidden');
+            dailyCompleteScreen.classList.add('hidden');
             countdownScreen.classList.remove('hidden');
             
             let count = 3;
@@ -490,7 +767,7 @@
                     clearInterval(countInterval);
                     startLevel();
                 }
-            }, 800);
+            }, 700);
         }
         
         function startLevel() {
@@ -509,11 +786,13 @@
             const config = getLevelConfig();
             player.rotationSpeed = config.rotationSpeed;
             player.rotationDirection = 1;
-            
             player.angle = 0;
             player.orbitRadius = player.baseOrbitRadius;
             player.dashing = false;
             player.trail = [];
+            
+            modeBadge.textContent = gameMode === 'daily' ? 'DAILY' : 'PRACTICE';
+            modeBadge.className = 'mode-badge ' + gameMode;
             
             updateHUD();
         }
@@ -522,33 +801,30 @@
             gameState = 'levelComplete';
             gameUI.classList.add('hidden');
             levelCompleteScreen.classList.remove('hidden');
-            
             completedLevel.textContent = currentLevel;
             
-            // Celebration particles
             const theme = getTheme();
-            for (let i = 0; i < 50; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 100 + Math.random() * 300;
+            for (let i = 0; i < 40; i++) {
+                const angle = rng() * Math.PI * 2;
+                const speed = 100 + rng() * 250;
                 particles.push({
                     x: centerX,
                     y: centerY,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     life: 1.5,
-                    color: Math.random() > 0.5 ? theme.primary : theme.secondary,
-                    radius: 4 + Math.random() * 8
+                    color: rng() > 0.5 ? theme.primary : theme.secondary,
+                    radius: 4 + rng() * 8
                 });
             }
             
             currentLevel++;
             
-            // Next level after 2.5 seconds
             setTimeout(() => {
                 if (gameState === 'levelComplete') {
                     startCountdown();
                 }
-            }, 2500);
+            }, 2000);
         }
         
         function startDash() {
@@ -562,8 +838,8 @@
                 particles.push({
                     x: player.x,
                     y: player.y,
-                    vx: (Math.random() - 0.5) * 200,
-                    vy: (Math.random() - 0.5) * 200,
+                    vx: (rng() - 0.5) * 200,
+                    vy: (rng() - 0.5) * 200,
                     life: 1,
                     color: theme.primary,
                     radius: player.radius * 0.3
@@ -574,37 +850,30 @@
         function spawnRing() {
             const config = getLevelConfig();
             const theme = getTheme();
-            
-            const numGaps = 1 + Math.floor(Math.random() * config.maxGaps);
+            const numGaps = 1 + Math.floor(rng() * config.maxGaps);
             const gaps = [];
-            const gapSize = Math.PI * config.gapSize + Math.random() * Math.PI * 0.05;
+            const gapSize = Math.PI * config.gapSize + rng() * Math.PI * 0.05;
             
             for (let i = 0; i < numGaps; i++) {
-                let gapAngle;
-                let valid = false;
-                let attempts = 0;
-                
+                let gapAngle, valid = false, attempts = 0;
                 while (!valid && attempts < 50) {
-                    gapAngle = Math.random() * Math.PI * 2;
+                    gapAngle = rng() * Math.PI * 2;
                     valid = true;
-                    
-                    for (const existingGap of gaps) {
-                        const angleDiff = Math.abs(gapAngle - existingGap.angle);
-                        const minDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
-                        if (minDiff < gapSize * 2) {
+                    for (const g of gaps) {
+                        const diff = Math.abs(gapAngle - g.angle);
+                        if (Math.min(diff, Math.PI * 2 - diff) < gapSize * 2) {
                             valid = false;
                             break;
                         }
                     }
                     attempts++;
                 }
-                
                 if (valid) {
-                    gaps.push({ 
-                        angle: gapAngle, 
+                    gaps.push({
+                        angle: gapAngle,
                         size: gapSize,
-                        shifting: config.shiftingGaps && Math.random() > 0.7,
-                        shiftSpeed: (Math.random() - 0.5) * 2
+                        shifting: config.shiftingGaps && rng() > 0.7,
+                        shiftSpeed: (rng() - 0.5) * 2
                     });
                 }
             }
@@ -612,24 +881,18 @@
             rings.push({
                 radius: minDim * 0.6,
                 gaps: gaps,
-                color: Math.random() > 0.3 ? theme.primary : theme.secondary,
+                color: rng() > 0.3 ? theme.primary : theme.secondary,
                 thickness: minDim * 0.015,
                 passed: false
             });
             
-            // Double ring chance
-            if (config.doubleRing && Math.random() > 0.6) {
-                setTimeout(() => {
-                    if (gameState === 'playing') {
-                        spawnRing();
-                    }
-                }, 300);
+            if (config.doubleRing && rng() > 0.65) {
+                setTimeout(() => { if (gameState === 'playing') spawnRing(); }, 250);
             }
             
-            // Random reverse
-            if (config.reverseChance && Math.random() < config.reverseChance * 0.1) {
+            if (config.reverseChance && rng() < config.reverseChance * 0.08) {
                 player.rotationDirection *= -1;
-                screenShake.intensity = 10;
+                screenShake.intensity = 8;
             }
         }
         
@@ -638,32 +901,52 @@
             if (combo >= 2) {
                 comboDisplay.textContent = `x${combo} COMBO!`;
                 comboDisplay.classList.add('show');
-                comboTimer = 1;
+                comboTimer = 1.2;
             }
         }
         
         function die() {
-            gameState = 'dead';
-            gameUI.classList.add('hidden');
-            deathScreen.classList.remove('hidden');
+            const reachedLevel = currentLevel;
             
-            finalLevel.textContent = `Level ${currentLevel}`;
-            
-            const isNewRecord = currentLevel > highestLevel;
-            if (isNewRecord) {
-                highestLevel = currentLevel;
-                localStorage.setItem('clutch-highest-level', highestLevel);
+            if (gameMode === 'daily') {
+                // Daily mode - game over, show result
+                gameState = 'dailyDone';
+                gameUI.classList.add('hidden');
+                dailyCompleteScreen.classList.remove('hidden');
+                dailyResult.textContent = `Level ${reachedLevel}`;
+                
+                const d = new Date();
+                dailyDate.textContent = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                
+                // Save daily result
+                localStorage.setItem('clutch-daily-date', getTodayString());
+                localStorage.setItem('clutch-daily-result', reachedLevel);
+                dailyCompleted = true;
+                dailyBestLevel = reachedLevel;
+                
+            } else {
+                // Practice mode - can retry
+                gameState = 'dead';
+                gameUI.classList.add('hidden');
+                deathScreen.classList.remove('hidden');
+                finalLevel.textContent = `Level ${reachedLevel}`;
+                
+                const isNewRecord = reachedLevel > highestLevel;
+                if (isNewRecord) {
+                    highestLevel = reachedLevel;
+                    localStorage.setItem('clutch-highest-level', highestLevel);
+                }
+                
+                highScoreDisplay.textContent = `BEST: Level ${highestLevel}`;
+                highScoreDisplay.classList.toggle('new-record', isNewRecord);
             }
             
-            highScoreDisplay.textContent = `BEST: Level ${highestLevel}`;
-            highScoreDisplay.classList.toggle('new-record', isNewRecord);
-            
-            screenShake.intensity = 30;
+            screenShake.intensity = 25;
             
             const theme = getTheme();
-            for (let i = 0; i < 30; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 100 + Math.random() * 300;
+            for (let i = 0; i < 25; i++) {
+                const angle = rng() * Math.PI * 2;
+                const speed = 100 + rng() * 250;
                 particles.push({
                     x: player.x,
                     y: player.y,
@@ -671,12 +954,38 @@
                     vy: Math.sin(angle) * speed,
                     life: 1,
                     color: theme.primary,
-                    radius: player.radius * (0.2 + Math.random() * 0.5)
+                    radius: player.radius * (0.2 + rng() * 0.5)
                 });
             }
             
-            // Reset to level 1
             currentLevel = 1;
+        }
+        
+        function retryGame() {
+            resetGame();
+            startCountdown();
+        }
+        
+        function backToMenu() {
+            gameState = 'title';
+            resetGame();
+            deathScreen.classList.add('hidden');
+            dailyCompleteScreen.classList.add('hidden');
+            titleScreen.classList.remove('hidden');
+            checkDailyStatus();
+            bestLevelDisplay.textContent = `Level ${highestLevel}`;
+        }
+        
+        function shareDaily() {
+            const text = `CLUTCH Daily Challenge\n${new Date().toLocaleDateString()}\n\n🎮 Level ${dailyBestLevel}\n\nCan you beat my score?`;
+            
+            if (navigator.share) {
+                navigator.share({ text: text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Result copied to clipboard!');
+                });
+            }
         }
         
         function resetGame() {
@@ -689,16 +998,16 @@
             particles = [];
             screenShake = { x: 0, y: 0, intensity: 0 };
             combo = 0;
+            rng = gameMode === 'daily' ? seededRandom(dailySeed) : Math.random;
         }
         
         function updateHUD() {
             const config = getLevelConfig();
             levelNum.textContent = currentLevel;
             timerDisplay.textContent = levelTime.toFixed(1);
-            
             const progress = (levelTime / config.duration) * 100;
             progressFill.style.width = `${Math.min(progress, 100)}%`;
-            progressLabel.textContent = `${levelTime.toFixed(1)} / ${config.duration} seconds`;
+            progressLabel.textContent = `${levelTime.toFixed(1)} / ${config.duration}s`;
         }
         
         function checkCollision() {
@@ -709,50 +1018,41 @@
                 const ring = rings[i];
                 
                 if (ring.radius <= player.baseOrbitRadius * 0.3) {
-                    if (!ring.passed) {
-                        die();
-                        return;
-                    }
+                    if (!ring.passed) { die(); return; }
                     rings.splice(i, 1);
                     continue;
                 }
                 
                 if (player.dashing && !ring.passed) {
-                    const dashingOutward = playerRadius > player.baseOrbitRadius;
                     const crossedRing = playerRadius > ring.radius && playerRadius < ring.radius + minDim * 0.15;
                     
-                    if (crossedRing && dashingOutward) {
+                    if (crossedRing && playerRadius > player.baseOrbitRadius) {
                         let inGap = false;
                         let normAngle = playerAngle % (Math.PI * 2);
                         if (normAngle < 0) normAngle += Math.PI * 2;
                         
                         for (const gap of ring.gaps) {
-                            let angleDiff = Math.abs(normAngle - gap.angle);
-                            if (angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
-                            
-                            if (angleDiff < gap.size / 2) {
-                                inGap = true;
-                                break;
-                            }
+                            let diff = Math.abs(normAngle - gap.angle);
+                            if (diff > Math.PI) diff = Math.PI * 2 - diff;
+                            if (diff < gap.size / 2) { inGap = true; break; }
                         }
                         
                         if (inGap) {
                             const theme = getTheme();
-                            for (let j = 0; j < 20; j++) {
-                                const pAngle = (j / 20) * Math.PI * 2 + Math.random() * 0.2;
+                            for (let j = 0; j < 16; j++) {
+                                const pAngle = (j / 16) * Math.PI * 2;
                                 particles.push({
                                     x: centerX + Math.cos(pAngle) * ring.radius,
                                     y: centerY + Math.sin(pAngle) * ring.radius,
-                                    vx: Math.cos(pAngle) * (50 + Math.random() * 100),
-                                    vy: Math.sin(pAngle) * (50 + Math.random() * 100),
-                                    life: 0.8,
+                                    vx: Math.cos(pAngle) * (40 + rng() * 80),
+                                    vy: Math.sin(pAngle) * (40 + rng() * 80),
+                                    life: 0.7,
                                     color: ring.color,
-                                    radius: 3 + Math.random() * 5
+                                    radius: 3 + rng() * 4
                                 });
                             }
                             showCombo();
                             rings.splice(i, 1);
-                            continue;
                         } else {
                             die();
                             return;
@@ -764,11 +1064,9 @@
         
         function update(timestamp) {
             if (!lastTime) lastTime = timestamp;
-            deltaTime = (timestamp - lastTime) / 1000;
+            deltaTime = Math.min((timestamp - lastTime) / 1000, 0.1);
             lastTime = timestamp;
-            deltaTime = Math.min(deltaTime, 0.1);
             
-            // Screen shake
             if (screenShake.intensity > 0) {
                 screenShake.x = (Math.random() - 0.5) * screenShake.intensity;
                 screenShake.y = (Math.random() - 0.5) * screenShake.intensity;
@@ -776,7 +1074,6 @@
                 if (screenShake.intensity < 0.5) screenShake.intensity = 0;
             }
             
-            // Particles
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.x += p.vx * deltaTime;
@@ -787,7 +1084,6 @@
                 if (p.life <= 0) particles.splice(i, 1);
             }
             
-            // Combo timer
             if (comboTimer > 0) {
                 comboTimer -= deltaTime;
                 if (comboTimer <= 0) {
@@ -799,33 +1095,25 @@
             if (gameState !== 'playing') return;
             
             const config = getLevelConfig();
-            
-            // Update level time
             levelTime += deltaTime;
             updateHUD();
             
-            // Check level complete
             if (levelTime >= config.duration) {
                 completeLevel();
                 return;
             }
             
-            // Spawn rings
             ringSpawnTimer += deltaTime;
             if (ringSpawnTimer >= config.spawnInterval) {
                 spawnRing();
                 ringSpawnTimer = 0;
             }
             
-            // Update player
             if (player.dashing) {
                 player.dashProgress += deltaTime * player.dashSpeed;
-                
                 if (player.dashProgress < 1) {
-                    const t = player.dashProgress;
-                    const eased = 1 - Math.pow(1 - t, 3);
+                    const eased = 1 - Math.pow(1 - player.dashProgress, 3);
                     player.orbitRadius = player.baseOrbitRadius + (player.dashTargetRadius - player.baseOrbitRadius) * eased;
-                    
                     player.trail.push({ x: player.x, y: player.y, alpha: 1 });
                 } else {
                     player.orbitRadius -= player.returnSpeed * minDim * deltaTime;
@@ -843,92 +1131,73 @@
             player.x = centerX + Math.cos(player.angle) * player.orbitRadius;
             player.y = centerY + Math.sin(player.angle) * player.orbitRadius;
             
-            // Trail
             for (let i = player.trail.length - 1; i >= 0; i--) {
                 player.trail[i].alpha -= deltaTime * 5;
                 if (player.trail[i].alpha <= 0) player.trail.splice(i, 1);
             }
             
-            // Rings
-            for (let i = rings.length - 1; i >= 0; i--) {
-                const ring = rings[i];
+            for (const ring of rings) {
                 ring.radius -= config.ringSpeed * deltaTime;
-                
-                // Shifting gaps
                 for (const gap of ring.gaps) {
-                    if (gap.shifting) {
-                        gap.angle += gap.shiftSpeed * deltaTime;
-                    }
+                    if (gap.shifting) gap.angle += gap.shiftSpeed * deltaTime;
                 }
-                
-                if (ring.radius < 0) rings.splice(i, 1);
             }
+            rings = rings.filter(r => r.radius > 0);
             
             checkCollision();
         }
         
         function draw() {
             const theme = getTheme();
-            
             ctx.save();
             ctx.translate(screenShake.x, screenShake.y);
             
-            // Background
             ctx.fillStyle = theme.bg;
             ctx.fillRect(-screenShake.x, -screenShake.y, width, height);
             
             // Center glow
-            const centerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, minDim * 0.15);
-            centerGradient.addColorStop(0, theme.primary.replace(')', ', 0.15)').replace('rgb', 'rgba').replace('#', 'rgba(').replace(/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, (m, r, g, b) => `${parseInt(r,16)}, ${parseInt(g,16)}, ${parseInt(b,16)}, 0.15`));
-            centerGradient.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = centerGradient;
+            const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, minDim * 0.15);
+            grad.addColorStop(0, 'rgba(100, 200, 255, 0.1)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(centerX, centerY, minDim * 0.15, 0, Math.PI * 2);
             ctx.fill();
             
-            // Orbit path
             if (gameState === 'playing' || gameState === 'countdown') {
-                ctx.strokeStyle = `${theme.primary}25`;
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, player.baseOrbitRadius, 0, Math.PI * 2);
                 ctx.stroke();
             }
             
-            // Rings
             for (const ring of rings) {
                 ctx.lineWidth = ring.thickness;
-                
-                for (let startAngle = 0; startAngle < Math.PI * 2; startAngle += 0.05) {
+                for (let a = 0; a < Math.PI * 2; a += 0.05) {
                     let inGap = false;
-                    
                     for (const gap of ring.gaps) {
-                        let angleDiff = Math.abs(startAngle - gap.angle);
-                        angleDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
-                        if (angleDiff < gap.size / 2) {
-                            inGap = true;
-                            break;
-                        }
+                        let diff = Math.abs(a - gap.angle);
+                        diff = Math.min(diff, Math.PI * 2 - diff);
+                        if (diff < gap.size / 2) { inGap = true; break; }
                     }
-                    
                     if (!inGap) {
                         ctx.strokeStyle = ring.color;
                         ctx.shadowColor = ring.color;
-                        ctx.shadowBlur = 15;
+                        ctx.shadowBlur = 12;
                         ctx.beginPath();
-                        ctx.arc(centerX, centerY, ring.radius, startAngle, startAngle + 0.06);
+                        ctx.arc(centerX, centerY, ring.radius, a, a + 0.06);
                         ctx.stroke();
                     }
                 }
                 ctx.shadowBlur = 0;
             }
             
-            // Particles
             for (const p of particles) {
                 ctx.globalAlpha = Math.min(p.life, 1);
                 ctx.fillStyle = p.color;
                 ctx.shadowColor = p.color;
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 8;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius * Math.min(p.life, 1), 0, Math.PI * 2);
                 ctx.fill();
@@ -936,41 +1205,35 @@
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
             
-            // Player trail
             for (const t of player.trail) {
                 ctx.globalAlpha = t.alpha * 0.5;
                 ctx.fillStyle = theme.primary;
-                ctx.shadowColor = theme.primary;
-                ctx.shadowBlur = 10;
                 ctx.beginPath();
                 ctx.arc(t.x, t.y, player.radius * t.alpha, 0, Math.PI * 2);
                 ctx.fill();
             }
             ctx.globalAlpha = 1;
-            ctx.shadowBlur = 0;
             
-            // Player
             if (gameState === 'playing' || gameState === 'countdown') {
-                const playerGlow = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, player.radius * 3);
-                playerGlow.addColorStop(0, `${theme.primary}80`);
-                playerGlow.addColorStop(0.5, `${theme.primary}33`);
-                playerGlow.addColorStop(1, `${theme.primary}00`);
-                ctx.fillStyle = playerGlow;
+                const pg = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, player.radius * 2.5);
+                pg.addColorStop(0, theme.primary + '80');
+                pg.addColorStop(1, theme.primary + '00');
+                ctx.fillStyle = pg;
                 ctx.beginPath();
-                ctx.arc(player.x, player.y, player.radius * 3, 0, Math.PI * 2);
+                ctx.arc(player.x, player.y, player.radius * 2.5, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.fillStyle = theme.primary;
                 ctx.shadowColor = theme.primary;
-                ctx.shadowBlur = 20;
+                ctx.shadowBlur = 15;
                 ctx.beginPath();
                 ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
                 ctx.fill();
                 
-                ctx.fillStyle = '#ffffff';
+                ctx.fillStyle = '#fff';
                 ctx.shadowBlur = 0;
                 ctx.beginPath();
-                ctx.arc(player.x - player.radius * 0.3, player.y - player.radius * 0.3, player.radius * 0.3, 0, Math.PI * 2);
+                ctx.arc(player.x - player.radius * 0.3, player.y - player.radius * 0.3, player.radius * 0.25, 0, Math.PI * 2);
                 ctx.fill();
             }
             
@@ -983,8 +1246,9 @@
             requestAnimationFrame(gameLoop);
         }
         
-        // Initialize
-        highScoreDisplay.textContent = `BEST: Level ${highestLevel}`;
+        // Init
+        checkDailyStatus();
+        bestLevelDisplay.textContent = `Level ${highestLevel}`;
         requestAnimationFrame(gameLoop);
     </script>
 </body>
