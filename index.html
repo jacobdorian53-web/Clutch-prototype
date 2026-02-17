@@ -856,28 +856,18 @@
             const gaps = [];
             const gapSize = Math.PI * config.gapSize + rng() * Math.PI * 0.03;
             
+            // Evenly distribute gaps around the ring with slight randomization
+            const baseSpacing = (Math.PI * 2) / numGaps;
+            const startOffset = rng() * Math.PI * 2;
+            
             for (let i = 0; i < numGaps; i++) {
-                let gapAngle, valid = false, attempts = 0;
-                while (!valid && attempts < 50) {
-                    gapAngle = rng() * Math.PI * 2;
-                    valid = true;
-                    for (const g of gaps) {
-                        const diff = Math.abs(gapAngle - g.angle);
-                        if (Math.min(diff, Math.PI * 2 - diff) < gapSize * 2) {
-                            valid = false;
-                            break;
-                        }
-                    }
-                    attempts++;
-                }
-                if (valid) {
-                    gaps.push({
-                        angle: gapAngle,
-                        size: gapSize,
-                        shifting: config.shiftingGaps && rng() > 0.7,
-                        shiftSpeed: (rng() - 0.5) * 2
-                    });
-                }
+                const gapAngle = startOffset + (i * baseSpacing) + (rng() - 0.5) * baseSpacing * 0.4;
+                gaps.push({
+                    angle: gapAngle % (Math.PI * 2),
+                    size: gapSize,
+                    shifting: config.shiftingGaps && rng() > 0.7,
+                    shiftSpeed: (rng() - 0.5) * 2
+                });
             }
             
             rings.push({
