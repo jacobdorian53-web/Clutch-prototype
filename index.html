@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CLUTCH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0a0a0a;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .title {
+            font-size: clamp(48px, 15vw, 120px);
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            color: #00ffff;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 40px #00ffff,
+                0 0 80px #00ffff;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: clamp(14px, 4vw, 24px);
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .countdown {
+            font-size: clamp(80px, 25vw, 200px);
+            font-weight: 900;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff,
+                0 0 80px #ff00ff;
+        }
+        
+        .score-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(20px, 5vw, 36px);
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.1em;
+        }
+        
+        .death-screen {
+            text-align: center;
+        }
+        
+        .death-title {
+            font-size: clamp(32px, 10vw, 72px);
+            font-weight: 900;
+            color: #ff0066;
+            text-shadow: 
+                0 0 10px #ff0066,
+                0 0 20px #ff0066,
+                0 0 40px #ff0066;
+            margin-bottom: 20px;
+        }
+        
+        .death-time {
+            font-size: clamp(48px, 12vw, 96px);
+            font-weight: 900;
+            color: #00ffff;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff;
+            margin-bottom: 10px;
+        }
+        
+        .death-label {
+            font-size: clamp(12px, 3vw, 18px);
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        
+        .high-score {
+            font-size: clamp(14px, 4vw, 20px);
+            color: #ff00ff;
+            letter-spacing: 0.2em;
+            margin-bottom: 40px;
+        }
+        
+        .new-record {
+            animation: flash 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="game"></canvas>
+    <div id="ui">
+        <div id="title-screen">
+            <div class="title">CLUTCH</div>
+            <div class="subtitle">Tap to Start</div>
+        </div>
+        <div id="countdown-screen" class="hidden">
+            <div class="countdown" id="countdown-number">3</div>
+        </div>
+        <div id="game-ui" class="hidden">
+            <div class="score-display" id="score">0.00</div>
+        </div>
+        <div id="death-screen" class="hidden">
+            <div class="death-screen">
+                <div class="death-title">CLUTCH</div>
+                <div class="death-time" id="final-time">0.00</div>
+                <div class="death-label">seconds survived</div>
+                <div class="high-score" id="high-score">BEST: 0.00</div>
+                <div class="subtitle">Tap to Retry</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        
+        // UI Elements
+        const titleScreen = document.getElementById('title-screen');
+        const countdownScreen = document.getElementById('countdown-screen');
+        const countdownNumber = document.getElementById('countdown-number');
+        const gameUI = document.getElementById('game-ui');
+        const scoreDisplay = document.getElementById('score');
+        const deathScreen = document.getElementById('death-screen');
+        const finalTime = document.getElementById('final-time');
+        const highScoreDisplay = document.getElementById('high-score');
+        
+        // Game state
+        let gameState = 'title'; // title, countdown, playing, dead
+        let score = 0;
+        let highScore = parseFloat(localStorage.getItem('clutch-highscore')) || 0;
+        let startTime = 0;
+        let lastTime = 0;
+        let deltaTime = 0;
+        
+        // Screen
+        let width, height, centerX, centerY, minDim;
+        
+        // Player
+        const player = {
+            angle: 0,
+            orbitRadius: 0,
+            baseOrbitRadius: 0,
+            rotationSpeed: 1.5,
+            x: 0,
+            y: 0,
+            radius: 0,
+            dashing: false,
+            dashSpeed: 0,
+            dashTargetRadius: 0,
+            dashProgress: 0,
+            returnSpeed: 8,
+            trail: []
+        };
+        
+        // Rings
+        let rings = [];
+        let ringSpawnTimer = 0;
+        let baseSpawnInterval = 2.5;
+        let spawnInterval = baseSpawnInterval;
+        let baseRingSpeed = 80;
+        let ringSpeed = baseRingSpeed;
+        let difficultyTimer = 0;
+        
+        // Visual effects
+        let screenShake = { x: 0, y: 0, intensity: 0 };
+        let particles = [];
+        
+        // Colors
+        const colors = {
+            cyan: '#00ffff',
+            pink: '#ff00ff',
+            purple: '#8800ff',
+            hotPink: '#ff0066'
+        };
+        const ringColors = [colors.pink, colors.purple, colors.cyan, colors.hotPink];
+        
+        // Resize handler
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            centerX = width / 2;
+            centerY = height / 2;
+            minDim = Math.min(width, height);
+            
+            player.baseOrbitRadius = minDim * 0.12;
+            player.orbitRadius = player.baseOrbitRadius;
+            player.radius = minDim * 0.025;
+        }
+        
+        resize();
+        window.addEventListener('resize', resize);
+        
+        // Input
+        function handleInput(e) {
+            e.preventDefault();
+            
+            if (gameState === 'title') {
+                startCountdown();
+            } else if (gameState === 'playing' && !player.dashing) {
+                startDash();
+            } else if (gameState === 'dead') {
+                resetGame();
+                startCountdown();
+            }
+        }
+        
+        canvas.addEventListener('touchstart', handleInput);
+        canvas.addEventListener('mousedown', handleInput);
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') handleInput(e);
+        });
+        
+        // Game functions
+        function startCountdown() {
+            gameState = 'countdown';
+            titleScreen.classList.add('hidden');
+            deathScreen.classList.add('hidden');
+            countdownScreen.classList.remove('hidden');
+            
+            let count = 3;
+            countdownNumber.textContent = count;
+            
+            const countInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownNumber.textContent = count;
+                } else {
+                    clearInterval(countInterval);
+                    startGame();
+                }
+            }, 1000);
+        }
+        
+        function startGame() {
+            gameState = 'playing';
+            countdownScreen.classList.add('hidden');
+            gameUI.classList.remove('hidden');
+            
+            score = 0;
+            startTime = performance.now();
+            rings = [];
+            particles = [];
+            ringSpawnTimer = 0;
+            spawnInterval = baseSpawnInterval;
+            ringSpeed = baseRingSpeed;
+            difficultyTimer = 0;
+            
+            player.angle = 0;
+            player.orbitRadius = player.baseOrbitRadius;
+            player.dashing = false;
+            player.trail = [];
+        }
+        
+        function startDash() {
+            player.dashing = true;
+            player.dashProgress = 0;
+            player.dashTargetRadius = minDim * 0.45;
+            player.dashSpeed = 12;
+            
+            // Add particles at start
+            for (let i = 0; i < 8; i++) {
+                particles.push({
+                    x: player.x,
+                    y: player.y,
+                    vx: (Math.random() - 0.5) * 200,
+                    vy: (Math.random() - 0.5) * 200,
+                    life: 1,
+                    color: colors.cyan,
+                    radius: player.radius * 0.3
+                });
+            }
+        }
+        
+        function spawnRing() {
+            const numGaps = 1 + Math.floor(Math.random() * 3); // 1-3 gaps
+            const gaps = [];
+            const gapSize = Math.PI * 0.15 + Math.random() * Math.PI * 0.1; // Gap size varies slightly
+            
+            for (let i = 0; i < numGaps; i++) {
+                let gapAngle;
+                let valid = false;
+                let attempts = 0;
+                
+                while (!valid && attempts < 50) {
+                    gapAngle = Math.random() * Math.PI * 2;
+                    valid = true;
+                    
+                    for (const existingGap of gaps) {
+                        const angleDiff = Math.abs(gapAngle - existingGap.angle);
+                        const minDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+                        if (minDiff < gapSize * 2) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    attempts++;
+                }
+                
+                if (valid) {
+                    gaps.push({ angle: gapAngle, size: gapSize });
+                }
+            }
+            
+            rings.push({
+                radius: minDim * 0.6,
+                gaps: gaps,
+                color: ringColors[Math.floor(Math.random() * ringColors.length)],
+                thickness: minDim * 0.015,
+                passed: false
+            });
+        }
+        
+        function die() {
+            gameState = 'dead';
+            gameUI.classList.add('hidden');
+            deathScreen.classList.remove('hidden');
+            
+            const finalScore = score.toFixed(2);
+            finalTime.textContent = finalScore;
+            
+            const isNewRecord = score > highScore;
+            if (isNewRecord) {
+                highScore = score;
+                localStorage.setItem('clutch-highscore', highScore);
+            }
+            
+            highScoreDisplay.textContent = `BEST: ${highScore.toFixed(2)}`;
+            highScoreDisplay.classList.toggle('new-record', isNewRecord);
+            
+            // Screen shake
+            screenShake.intensity = 30;
+            
+            // Death particles
+            for (let i = 0; i < 30; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 100 + Math.random() * 300;
+                particles.push({
+                    x: player.x,
+                    y: player.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1,
+                    color: colors.cyan,
+                    radius: player.radius * (0.2 + Math.random() * 0.5)
+                });
+            }
+        }
+        
+        function resetGame() {
+            player.angle = 0;
+            player.orbitRadius = player.baseOrbitRadius;
+            player.dashing = false;
+            player.trail = [];
+            rings = [];
+            particles = [];
+            screenShake = { x: 0, y: 0, intensity: 0 };
+        }
+        
+        function checkCollision() {
+            const playerAngle = player.angle;
+            const playerRadius = player.orbitRadius;
+            
+            for (let i = rings.length - 1; i >= 0; i--) {
+                const ring = rings[i];
+                
+                // Check if ring reached center (death zone)
+                if (ring.radius <= player.baseOrbitRadius * 0.3) {
+                    die();
+                    return;
+                }
+                
+                // Check if player is dashing through this ring
+                if (player.dashing && !ring.passed) {
+                    const dashingOutward = playerRadius > player.baseOrbitRadius;
+                    const nearRing = Math.abs(playerRadius - ring.radius) < ring.thickness * 2 + player.radius;
+                    
+                    if (nearRing && dashingOutward) {
+                        // Check if player is in a gap
+                        let inGap = false;
+                        for (const gap of ring.gaps) {
+                            let angleDiff = Math.abs(playerAngle - gap.angle);
+                            angleDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+                            
+                            if (angleDiff < gap.size / 2 + 0.15) {
+                                inGap = true;
+                                break;
+                            }
+                        }
+                        
+                        if (inGap) {
+                            ring.passed = true;
+                            // Success particles
+                            for (let j = 0; j < 12; j++) {
+                                const pAngle = playerAngle + (Math.random() - 0.5) * 0.5;
+                                const pRadius = ring.radius + (Math.random() - 0.5) * 20;
+                                particles.push({
+                                    x: centerX + Math.cos(pAngle) * pRadius,
+                                    y: centerY + Math.sin(pAngle) * pRadius,
+                                    vx: (Math.random() - 0.5) * 100,
+                                    vy: (Math.random() - 0.5) * 100,
+                                    life: 1,
+                                    color: ring.color,
+                                    radius: 3 + Math.random() * 5
+                                });
+                            }
+                        } else {
+                            // Hit the ring - death
+                            die();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        
+        function update(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            deltaTime = (timestamp - lastTime) / 1000;
+            lastTime = timestamp;
+            
+            // Limit deltaTime to prevent huge jumps
+            deltaTime = Math.min(deltaTime, 0.1);
+            
+            // Update screen shake
+            if (screenShake.intensity > 0) {
+                screenShake.x = (Math.random() - 0.5) * screenShake.intensity;
+                screenShake.y = (Math.random() - 0.5) * screenShake.intensity;
+                screenShake.intensity *= 0.9;
+                if (screenShake.intensity < 0.5) screenShake.intensity = 0;
+            }
+            
+            // Update particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx * deltaTime;
+                p.y += p.vy * deltaTime;
+                p.life -= deltaTime * 2;
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            
+            if (gameState !== 'playing') return;
+            
+            // Update score
+            score = (timestamp - startTime) / 1000;
+            scoreDisplay.textContent = score.toFixed(2);
+            
+            // Increase difficulty over time
+            difficultyTimer += deltaTime;
+            const difficultyMultiplier = 1 + difficultyTimer * 0.05;
+            spawnInterval = baseSpawnInterval / difficultyMultiplier;
+            ringSpeed = baseRingSpeed * difficultyMultiplier;
+            
+            // Spawn rings
+            ringSpawnTimer += deltaTime;
+            if (ringSpawnTimer >= spawnInterval) {
+                spawnRing();
+                ringSpawnTimer = 0;
+            }
+            
+            // Update player
+            if (player.dashing) {
+                player.dashProgress += deltaTime * player.dashSpeed;
+                
+                if (player.dashProgress < 1) {
+                    // Dashing outward
+                    const t = player.dashProgress;
+                    const eased = 1 - Math.pow(1 - t, 3);
+                    player.orbitRadius = player.baseOrbitRadius + (player.dashTargetRadius - player.baseOrbitRadius) * eased;
+                    
+                    // Add trail
+                    player.trail.push({
+                        x: player.x,
+                        y: player.y,
+                        alpha: 1
+                    });
+                } else {
+                    // Return to orbit
+                    player.orbitRadius -= player.returnSpeed * minDim * deltaTime;
+                    
+                    if (player.orbitRadius <= player.baseOrbitRadius) {
+                        player.orbitRadius = player.baseOrbitRadius;
+                        player.dashing = false;
+                    }
+                }
+            } else {
+                // Normal rotation
+                player.angle += player.rotationSpeed * deltaTime;
+            }
+            
+            // Update player position
+            player.x = centerX + Math.cos(player.angle) * player.orbitRadius;
+            player.y = centerY + Math.sin(player.angle) * player.orbitRadius;
+            
+            // Update trail
+            for (let i = player.trail.length - 1; i >= 0; i--) {
+                player.trail[i].alpha -= deltaTime * 5;
+                if (player.trail[i].alpha <= 0) {
+                    player.trail.splice(i, 1);
+                }
+            }
+            
+            // Update rings
+            for (let i = rings.length - 1; i >= 0; i--) {
+                rings[i].radius -= ringSpeed * deltaTime;
+                
+                // Remove rings that passed through
+                if (rings[i].radius < 0) {
+                    rings.splice(i, 1);
+                }
+            }
+            
+            // Check collisions
+            checkCollision();
+        }
+        
+        function draw() {
+            ctx.save();
+            
+            // Apply screen shake
+            ctx.translate(screenShake.x, screenShake.y);
+            
+            // Clear
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(-screenShake.x, -screenShake.y, width, height);
+            
+            // Draw center glow
+            const centerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, minDim * 0.15);
+            centerGradient.addColorStop(0, 'rgba(0, 255, 255, 0.1)');
+            centerGradient.addColorStop(1, 'rgba(0, 255, 255, 0)');
+            ctx.fillStyle = centerGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, minDim * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw orbit path (subtle)
+            if (gameState === 'playing' || gameState === 'countdown') {
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, player.baseOrbitRadius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Draw rings
+            for (const ring of rings) {
+                ctx.lineWidth = ring.thickness;
+                
+                // Draw ring segments (avoiding gaps)
+                for (let startAngle = 0; startAngle < Math.PI * 2; startAngle += 0.05) {
+                    let inGap = false;
+                    
+                    for (const gap of ring.gaps) {
+                        let angleDiff = Math.abs(startAngle - gap.angle);
+                        angleDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+                        
+                        if (angleDiff < gap.size / 2) {
+                            inGap = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!inGap) {
+                        ctx.strokeStyle = ring.color;
+                        ctx.shadowColor = ring.color;
+                        ctx.shadowBlur = 15;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, ring.radius, startAngle, startAngle + 0.06);
+                        ctx.stroke();
+                    }
+                }
+                ctx.shadowBlur = 0;
+            }
+            
+            // Draw particles
+            for (const p of particles) {
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius * p.life, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            
+            // Draw player trail
+            for (const t of player.trail) {
+                ctx.globalAlpha = t.alpha * 0.5;
+                ctx.fillStyle = colors.cyan;
+                ctx.shadowColor = colors.cyan;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, player.radius * t.alpha, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            
+            // Draw player
+            if (gameState === 'playing' || gameState === 'countdown') {
+                // Outer glow
+                const playerGlow = ctx.createRadialGradient(
+                    player.x, player.y, 0,
+                    player.x, player.y, player.radius * 3
+                );
+                playerGlow.addColorStop(0, 'rgba(0, 255, 255, 0.5)');
+                playerGlow.addColorStop(0.5, 'rgba(0, 255, 255, 0.2)');
+                playerGlow.addColorStop(1, 'rgba(0, 255, 255, 0)');
+                ctx.fillStyle = playerGlow;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius * 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Main orb
+                ctx.fillStyle = colors.cyan;
+                ctx.shadowColor = colors.cyan;
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Inner highlight
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(player.x - player.radius * 0.3, player.y - player.radius * 0.3, player.radius * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        }
+        
+        function gameLoop(timestamp) {
+            update(timestamp);
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Initialize high score display
+        highScoreDisplay.textContent = `BEST: ${highScore.toFixed(2)}`;
+        
+        // Start game loop
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>
