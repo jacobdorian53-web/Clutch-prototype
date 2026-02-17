@@ -443,9 +443,14 @@
                     if (crossedRing && dashingOutward) {
                         // Check if player is in a gap
                         let inGap = false;
+                        // Normalize player angle to [0, 2π]
+                        let normAngle = playerAngle % (Math.PI * 2);
+                        if (normAngle < 0) normAngle += Math.PI * 2;
+                        
                         for (const gap of ring.gaps) {
-                            let angleDiff = Math.abs(playerAngle - gap.angle);
-                            angleDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+                            let angleDiff = Math.abs(normAngle - gap.angle);
+                            // Handle wraparound
+                            if (angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
                             
                             if (angleDiff < gap.size / 2) {
                                 inGap = true;
@@ -559,6 +564,8 @@
             } else {
                 // Normal rotation
                 player.angle += player.rotationSpeed * deltaTime;
+                // Keep angle in [0, 2π] range
+                if (player.angle > Math.PI * 2) player.angle -= Math.PI * 2;
             }
             
             // Update player position
