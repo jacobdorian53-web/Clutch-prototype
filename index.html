@@ -73,17 +73,124 @@
                 0 0 80px #ff00ff;
         }
         
-        .score-display {
+        .game-hud {
             position: absolute;
             top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0 20px;
+        }
+        
+        .level-display {
+            text-align: left;
+        }
+        
+        .level-label {
+            font-size: clamp(12px, 3vw, 16px);
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        
+        .level-number {
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: 900;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+        
+        .timer-display {
+            text-align: right;
+        }
+        
+        .timer-label {
+            font-size: clamp(12px, 3vw, 16px);
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        
+        .timer-value {
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: 900;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: clamp(20px, 5vw, 36px);
-            font-weight: 700;
-            color: #fff;
+            width: 60%;
+            max-width: 400px;
+        }
+        
+        .progress-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            border-radius: 4px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        .progress-label {
+            text-align: center;
+            margin-top: 8px;
+            font-size: clamp(10px, 2.5vw, 14px);
+            color: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.1em;
         }
         
+        /* Level Complete Screen */
+        .level-complete {
+            text-align: center;
+        }
+        
+        .level-complete-title {
+            font-size: clamp(24px, 6vw, 40px);
+            color: #22c55e;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #22c55e;
+        }
+        
+        .level-complete-number {
+            font-size: clamp(64px, 20vw, 150px);
+            font-weight: 900;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 20px #ff00ff,
+                0 0 40px #ff00ff,
+                0 0 80px #ff00ff;
+            animation: levelPulse 0.5s ease-out;
+        }
+        
+        .level-complete-next {
+            font-size: clamp(14px, 4vw, 20px);
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 30px;
+            letter-spacing: 0.2em;
+        }
+        
+        @keyframes levelPulse {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Death Screen */
         .death-screen {
             text-align: center;
         }
@@ -99,13 +206,17 @@
             margin-bottom: 20px;
         }
         
-        .death-time {
+        .death-level {
+            font-size: clamp(20px, 5vw, 32px);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+        
+        .death-reached {
             font-size: clamp(48px, 12vw, 96px);
             font-weight: 900;
-            color: #00ffff;
-            text-shadow: 
-                0 0 10px #00ffff,
-                0 0 20px #00ffff;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
             margin-bottom: 10px;
         }
         
@@ -119,7 +230,7 @@
         
         .high-score {
             font-size: clamp(14px, 4vw, 20px);
-            color: #ff00ff;
+            color: #00ffff;
             letter-spacing: 0.2em;
             margin-bottom: 40px;
         }
@@ -141,6 +252,32 @@
         .hidden {
             display: none !important;
         }
+        
+        /* Combo display */
+        .combo-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(24px, 6vw, 40px);
+            font-weight: 900;
+            color: #ffff00;
+            text-shadow: 0 0 20px #ffff00;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        
+        .combo-display.show {
+            opacity: 1;
+            animation: comboPopup 0.3s ease-out;
+        }
+        
+        @keyframes comboPopup {
+            0% { transform: translate(-50%, -50%) scale(0.5); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -150,18 +287,46 @@
             <div class="title">CLUTCH</div>
             <div class="subtitle">Tap to Start</div>
         </div>
+        
         <div id="countdown-screen" class="hidden">
             <div class="countdown" id="countdown-number">3</div>
         </div>
+        
         <div id="game-ui" class="hidden">
-            <div class="score-display" id="score">0.00</div>
+            <div class="game-hud">
+                <div class="level-display">
+                    <div class="level-label">Level</div>
+                    <div class="level-number" id="level-num">1</div>
+                </div>
+                <div class="timer-display">
+                    <div class="timer-label">Time</div>
+                    <div class="timer-value" id="timer">0.0</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-label" id="progress-label">0 / 15 seconds</div>
+            </div>
+            <div class="combo-display" id="combo-display">x2 COMBO!</div>
         </div>
+        
+        <div id="level-complete-screen" class="hidden">
+            <div class="level-complete">
+                <div class="level-complete-title">Level Complete!</div>
+                <div class="level-complete-number" id="completed-level">1</div>
+                <div class="level-complete-next">Get ready for the next level...</div>
+            </div>
+        </div>
+        
         <div id="death-screen" class="hidden">
             <div class="death-screen">
                 <div class="death-title">CLUTCH</div>
-                <div class="death-time" id="final-time">0.00</div>
-                <div class="death-label">seconds survived</div>
-                <div class="high-score" id="high-score">BEST: 0.00</div>
+                <div class="death-level">You reached</div>
+                <div class="death-reached" id="final-level">Level 1</div>
+                <div class="death-label">Back to Level 1</div>
+                <div class="high-score" id="high-score">BEST: Level 1</div>
                 <div class="subtitle">Tap to Retry</div>
             </div>
         </div>
@@ -177,18 +342,56 @@
         const countdownScreen = document.getElementById('countdown-screen');
         const countdownNumber = document.getElementById('countdown-number');
         const gameUI = document.getElementById('game-ui');
-        const scoreDisplay = document.getElementById('score');
+        const levelNum = document.getElementById('level-num');
+        const timerDisplay = document.getElementById('timer');
+        const progressFill = document.getElementById('progress-fill');
+        const progressLabel = document.getElementById('progress-label');
+        const comboDisplay = document.getElementById('combo-display');
+        const levelCompleteScreen = document.getElementById('level-complete-screen');
+        const completedLevel = document.getElementById('completed-level');
         const deathScreen = document.getElementById('death-screen');
-        const finalTime = document.getElementById('final-time');
+        const finalLevel = document.getElementById('final-level');
         const highScoreDisplay = document.getElementById('high-score');
         
         // Game state
-        let gameState = 'title'; // title, countdown, playing, dead
-        let score = 0;
-        let highScore = parseFloat(localStorage.getItem('clutch-highscore')) || 0;
-        let startTime = 0;
+        let gameState = 'title'; // title, countdown, playing, levelComplete, dead
+        let currentLevel = 1;
+        let levelTime = 0;
+        let highestLevel = parseInt(localStorage.getItem('clutch-highest-level')) || 1;
         let lastTime = 0;
         let deltaTime = 0;
+        let combo = 0;
+        let comboTimer = 0;
+        
+        // Level definitions
+        const levels = [
+            null, // index 0 unused
+            { duration: 15, ringSpeed: 70, spawnInterval: 2.5, gapSize: 0.22, maxGaps: 2, rotationSpeed: 1.3, name: "Warm Up" },
+            { duration: 20, ringSpeed: 85, spawnInterval: 2.2, gapSize: 0.20, maxGaps: 2, rotationSpeed: 1.4, name: "Getting Started" },
+            { duration: 25, ringSpeed: 100, spawnInterval: 2.0, gapSize: 0.18, maxGaps: 3, rotationSpeed: 1.5, name: "Finding Rhythm" },
+            { duration: 30, ringSpeed: 115, spawnInterval: 1.8, gapSize: 0.17, maxGaps: 3, rotationSpeed: 1.6, reverseChance: 0.3, name: "Reversal" },
+            { duration: 35, ringSpeed: 130, spawnInterval: 1.6, gapSize: 0.16, maxGaps: 3, rotationSpeed: 1.7, reverseChance: 0.4, name: "Chaos" },
+            { duration: 40, ringSpeed: 145, spawnInterval: 1.4, gapSize: 0.15, maxGaps: 4, rotationSpeed: 1.8, reverseChance: 0.5, doubleRing: true, name: "Double Trouble" },
+            { duration: 45, ringSpeed: 160, spawnInterval: 1.3, gapSize: 0.14, maxGaps: 4, rotationSpeed: 1.9, reverseChance: 0.5, doubleRing: true, name: "Nightmare" },
+            { duration: 50, ringSpeed: 175, spawnInterval: 1.2, gapSize: 0.13, maxGaps: 4, rotationSpeed: 2.0, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "Impossible" },
+            { duration: 55, ringSpeed: 190, spawnInterval: 1.1, gapSize: 0.12, maxGaps: 5, rotationSpeed: 2.1, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "Legendary" },
+            { duration: 60, ringSpeed: 200, spawnInterval: 1.0, gapSize: 0.11, maxGaps: 5, rotationSpeed: 2.2, reverseChance: 0.7, doubleRing: true, shiftingGaps: true, name: "CLUTCH MASTER" }
+        ];
+        
+        // Color themes per level
+        const levelThemes = [
+            null,
+            { primary: '#00ffff', secondary: '#ff00ff', bg: '#0a0a0a' },
+            { primary: '#00ff88', secondary: '#ff00ff', bg: '#0a0a0a' },
+            { primary: '#00ffff', secondary: '#ff8800', bg: '#0a0808' },
+            { primary: '#ff00ff', secondary: '#00ffff', bg: '#080a0a' },
+            { primary: '#ffff00', secondary: '#ff0066', bg: '#0a0a08' },
+            { primary: '#ff0066', secondary: '#00ffff', bg: '#0a0808' },
+            { primary: '#8800ff', secondary: '#00ff88', bg: '#08080a' },
+            { primary: '#ff00ff', secondary: '#ffff00', bg: '#0a080a' },
+            { primary: '#00ffff', secondary: '#ff0066', bg: '#080a0a' },
+            { primary: '#ffffff', secondary: '#ff00ff', bg: '#050505' }
+        ];
         
         // Screen
         let width, height, centerX, centerY, minDim;
@@ -199,6 +402,7 @@
             orbitRadius: 0,
             baseOrbitRadius: 0,
             rotationSpeed: 1.5,
+            rotationDirection: 1,
             x: 0,
             y: 0,
             radius: 0,
@@ -213,24 +417,21 @@
         // Rings
         let rings = [];
         let ringSpawnTimer = 0;
-        let baseSpawnInterval = 3.0; // Slower initial spawn rate
-        let spawnInterval = baseSpawnInterval;
-        let baseRingSpeed = 80;
-        let ringSpeed = baseRingSpeed;
-        let difficultyTimer = 0;
         
         // Visual effects
         let screenShake = { x: 0, y: 0, intensity: 0 };
         let particles = [];
         
-        // Colors
-        const colors = {
-            cyan: '#00ffff',
-            pink: '#ff00ff',
-            purple: '#8800ff',
-            hotPink: '#ff0066'
-        };
-        const ringColors = [colors.pink, colors.purple, colors.cyan, colors.hotPink];
+        // Get current level config
+        function getLevelConfig() {
+            const idx = Math.min(currentLevel, levels.length - 1);
+            return levels[idx];
+        }
+        
+        function getTheme() {
+            const idx = Math.min(currentLevel, levelThemes.length - 1);
+            return levelThemes[idx];
+        }
         
         // Resize handler
         function resize() {
@@ -275,6 +476,7 @@
             gameState = 'countdown';
             titleScreen.classList.add('hidden');
             deathScreen.classList.add('hidden');
+            levelCompleteScreen.classList.add('hidden');
             countdownScreen.classList.remove('hidden');
             
             let count = 3;
@@ -286,29 +488,67 @@
                     countdownNumber.textContent = count;
                 } else {
                     clearInterval(countInterval);
-                    startGame();
+                    startLevel();
                 }
-            }, 1000);
+            }, 800);
         }
         
-        function startGame() {
+        function startLevel() {
             gameState = 'playing';
             countdownScreen.classList.add('hidden');
+            levelCompleteScreen.classList.add('hidden');
             gameUI.classList.remove('hidden');
             
-            score = 0;
-            startTime = performance.now();
+            levelTime = 0;
             rings = [];
             particles = [];
             ringSpawnTimer = 0;
-            spawnInterval = baseSpawnInterval;
-            ringSpeed = baseRingSpeed;
-            difficultyTimer = 0;
+            combo = 0;
+            comboTimer = 0;
+            
+            const config = getLevelConfig();
+            player.rotationSpeed = config.rotationSpeed;
+            player.rotationDirection = 1;
             
             player.angle = 0;
             player.orbitRadius = player.baseOrbitRadius;
             player.dashing = false;
             player.trail = [];
+            
+            updateHUD();
+        }
+        
+        function completeLevel() {
+            gameState = 'levelComplete';
+            gameUI.classList.add('hidden');
+            levelCompleteScreen.classList.remove('hidden');
+            
+            completedLevel.textContent = currentLevel;
+            
+            // Celebration particles
+            const theme = getTheme();
+            for (let i = 0; i < 50; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 100 + Math.random() * 300;
+                particles.push({
+                    x: centerX,
+                    y: centerY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1.5,
+                    color: Math.random() > 0.5 ? theme.primary : theme.secondary,
+                    radius: 4 + Math.random() * 8
+                });
+            }
+            
+            currentLevel++;
+            
+            // Next level after 2.5 seconds
+            setTimeout(() => {
+                if (gameState === 'levelComplete') {
+                    startCountdown();
+                }
+            }, 2500);
         }
         
         function startDash() {
@@ -317,7 +557,7 @@
             player.dashTargetRadius = minDim * 0.45;
             player.dashSpeed = 12;
             
-            // Add particles at start
+            const theme = getTheme();
             for (let i = 0; i < 8; i++) {
                 particles.push({
                     x: player.x,
@@ -325,16 +565,19 @@
                     vx: (Math.random() - 0.5) * 200,
                     vy: (Math.random() - 0.5) * 200,
                     life: 1,
-                    color: colors.cyan,
+                    color: theme.primary,
                     radius: player.radius * 0.3
                 });
             }
         }
         
         function spawnRing() {
-            const numGaps = 1 + Math.floor(Math.random() * 3); // 1-3 gaps
+            const config = getLevelConfig();
+            const theme = getTheme();
+            
+            const numGaps = 1 + Math.floor(Math.random() * config.maxGaps);
             const gaps = [];
-            const gapSize = Math.PI * 0.18 + Math.random() * Math.PI * 0.08; // Gap size ~32-46 degrees
+            const gapSize = Math.PI * config.gapSize + Math.random() * Math.PI * 0.05;
             
             for (let i = 0; i < numGaps; i++) {
                 let gapAngle;
@@ -357,17 +600,46 @@
                 }
                 
                 if (valid) {
-                    gaps.push({ angle: gapAngle, size: gapSize });
+                    gaps.push({ 
+                        angle: gapAngle, 
+                        size: gapSize,
+                        shifting: config.shiftingGaps && Math.random() > 0.7,
+                        shiftSpeed: (Math.random() - 0.5) * 2
+                    });
                 }
             }
             
             rings.push({
                 radius: minDim * 0.6,
                 gaps: gaps,
-                color: ringColors[Math.floor(Math.random() * ringColors.length)],
+                color: Math.random() > 0.3 ? theme.primary : theme.secondary,
                 thickness: minDim * 0.015,
                 passed: false
             });
+            
+            // Double ring chance
+            if (config.doubleRing && Math.random() > 0.6) {
+                setTimeout(() => {
+                    if (gameState === 'playing') {
+                        spawnRing();
+                    }
+                }, 300);
+            }
+            
+            // Random reverse
+            if (config.reverseChance && Math.random() < config.reverseChance * 0.1) {
+                player.rotationDirection *= -1;
+                screenShake.intensity = 10;
+            }
+        }
+        
+        function showCombo() {
+            combo++;
+            if (combo >= 2) {
+                comboDisplay.textContent = `x${combo} COMBO!`;
+                comboDisplay.classList.add('show');
+                comboTimer = 1;
+            }
         }
         
         function die() {
@@ -375,22 +647,20 @@
             gameUI.classList.add('hidden');
             deathScreen.classList.remove('hidden');
             
-            const finalScore = score.toFixed(2);
-            finalTime.textContent = finalScore;
+            finalLevel.textContent = `Level ${currentLevel}`;
             
-            const isNewRecord = score > highScore;
+            const isNewRecord = currentLevel > highestLevel;
             if (isNewRecord) {
-                highScore = score;
-                localStorage.setItem('clutch-highscore', highScore);
+                highestLevel = currentLevel;
+                localStorage.setItem('clutch-highest-level', highestLevel);
             }
             
-            highScoreDisplay.textContent = `BEST: ${highScore.toFixed(2)}`;
+            highScoreDisplay.textContent = `BEST: Level ${highestLevel}`;
             highScoreDisplay.classList.toggle('new-record', isNewRecord);
             
-            // Screen shake
             screenShake.intensity = 30;
             
-            // Death particles
+            const theme = getTheme();
             for (let i = 0; i < 30; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 100 + Math.random() * 300;
@@ -400,10 +670,13 @@
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     life: 1,
-                    color: colors.cyan,
+                    color: theme.primary,
                     radius: player.radius * (0.2 + Math.random() * 0.5)
                 });
             }
+            
+            // Reset to level 1
+            currentLevel = 1;
         }
         
         function resetGame() {
@@ -411,9 +684,21 @@
             player.orbitRadius = player.baseOrbitRadius;
             player.dashing = false;
             player.trail = [];
+            player.rotationDirection = 1;
             rings = [];
             particles = [];
             screenShake = { x: 0, y: 0, intensity: 0 };
+            combo = 0;
+        }
+        
+        function updateHUD() {
+            const config = getLevelConfig();
+            levelNum.textContent = currentLevel;
+            timerDisplay.textContent = levelTime.toFixed(1);
+            
+            const progress = (levelTime / config.duration) * 100;
+            progressFill.style.width = `${Math.min(progress, 100)}%`;
+            progressLabel.textContent = `${levelTime.toFixed(1)} / ${config.duration} seconds`;
         }
         
         function checkCollision() {
@@ -423,33 +708,26 @@
             for (let i = rings.length - 1; i >= 0; i--) {
                 const ring = rings[i];
                 
-                // Check if ring reached center (death zone) - only kills if you didn't pass through it
                 if (ring.radius <= player.baseOrbitRadius * 0.3) {
                     if (!ring.passed) {
                         die();
                         return;
                     }
-                    // Ring was passed, remove it safely
                     rings.splice(i, 1);
                     continue;
                 }
                 
-                // Check if player is dashing through this ring
                 if (player.dashing && !ring.passed) {
                     const dashingOutward = playerRadius > player.baseOrbitRadius;
-                    // Wider detection: player radius is beyond ring (crossed through it)
                     const crossedRing = playerRadius > ring.radius && playerRadius < ring.radius + minDim * 0.15;
                     
                     if (crossedRing && dashingOutward) {
-                        // Check if player is in a gap
                         let inGap = false;
-                        // Normalize player angle to [0, 2π]
                         let normAngle = playerAngle % (Math.PI * 2);
                         if (normAngle < 0) normAngle += Math.PI * 2;
                         
                         for (const gap of ring.gaps) {
                             let angleDiff = Math.abs(normAngle - gap.angle);
-                            // Handle wraparound
                             if (angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
                             
                             if (angleDiff < gap.size / 2) {
@@ -459,26 +737,23 @@
                         }
                         
                         if (inGap) {
-                            // Success! Explode the ring with particles all around it
-                            const ringColor = ring.color;
-                            const ringRadius = ring.radius;
-                            for (let j = 0; j < 30; j++) {
-                                const pAngle = (j / 30) * Math.PI * 2 + Math.random() * 0.2;
+                            const theme = getTheme();
+                            for (let j = 0; j < 20; j++) {
+                                const pAngle = (j / 20) * Math.PI * 2 + Math.random() * 0.2;
                                 particles.push({
-                                    x: centerX + Math.cos(pAngle) * ringRadius,
-                                    y: centerY + Math.sin(pAngle) * ringRadius,
+                                    x: centerX + Math.cos(pAngle) * ring.radius,
+                                    y: centerY + Math.sin(pAngle) * ring.radius,
                                     vx: Math.cos(pAngle) * (50 + Math.random() * 100),
                                     vy: Math.sin(pAngle) * (50 + Math.random() * 100),
-                                    life: 1,
-                                    color: ringColor,
-                                    radius: 4 + Math.random() * 6
+                                    life: 0.8,
+                                    color: ring.color,
+                                    radius: 3 + Math.random() * 5
                                 });
                             }
-                            // Remove the ring immediately
+                            showCombo();
                             rings.splice(i, 1);
                             continue;
                         } else {
-                            // Hit the ring - death
                             die();
                             return;
                         }
@@ -491,11 +766,9 @@
             if (!lastTime) lastTime = timestamp;
             deltaTime = (timestamp - lastTime) / 1000;
             lastTime = timestamp;
-            
-            // Limit deltaTime to prevent huge jumps
             deltaTime = Math.min(deltaTime, 0.1);
             
-            // Update screen shake
+            // Screen shake
             if (screenShake.intensity > 0) {
                 screenShake.x = (Math.random() - 0.5) * screenShake.intensity;
                 screenShake.y = (Math.random() - 0.5) * screenShake.intensity;
@@ -503,35 +776,43 @@
                 if (screenShake.intensity < 0.5) screenShake.intensity = 0;
             }
             
-            // Update particles
+            // Particles
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.x += p.vx * deltaTime;
                 p.y += p.vy * deltaTime;
-                p.life -= deltaTime * 2;
+                p.life -= deltaTime * 1.5;
                 p.vx *= 0.98;
                 p.vy *= 0.98;
-                
-                if (p.life <= 0) {
-                    particles.splice(i, 1);
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+            
+            // Combo timer
+            if (comboTimer > 0) {
+                comboTimer -= deltaTime;
+                if (comboTimer <= 0) {
+                    comboDisplay.classList.remove('show');
+                    combo = 0;
                 }
             }
             
             if (gameState !== 'playing') return;
             
-            // Update score
-            score = (timestamp - startTime) / 1000;
-            scoreDisplay.textContent = score.toFixed(2);
+            const config = getLevelConfig();
             
-            // Increase difficulty over time
-            difficultyTimer += deltaTime;
-            const difficultyMultiplier = 1 + difficultyTimer * 0.025; // Slower difficulty ramp
-            spawnInterval = baseSpawnInterval / difficultyMultiplier;
-            ringSpeed = baseRingSpeed * difficultyMultiplier;
+            // Update level time
+            levelTime += deltaTime;
+            updateHUD();
+            
+            // Check level complete
+            if (levelTime >= config.duration) {
+                completeLevel();
+                return;
+            }
             
             // Spawn rings
             ringSpawnTimer += deltaTime;
-            if (ringSpawnTimer >= spawnInterval) {
+            if (ringSpawnTimer >= config.spawnInterval) {
                 spawnRing();
                 ringSpawnTimer = 0;
             }
@@ -541,99 +822,89 @@
                 player.dashProgress += deltaTime * player.dashSpeed;
                 
                 if (player.dashProgress < 1) {
-                    // Dashing outward
                     const t = player.dashProgress;
                     const eased = 1 - Math.pow(1 - t, 3);
                     player.orbitRadius = player.baseOrbitRadius + (player.dashTargetRadius - player.baseOrbitRadius) * eased;
                     
-                    // Add trail
-                    player.trail.push({
-                        x: player.x,
-                        y: player.y,
-                        alpha: 1
-                    });
+                    player.trail.push({ x: player.x, y: player.y, alpha: 1 });
                 } else {
-                    // Return to orbit
                     player.orbitRadius -= player.returnSpeed * minDim * deltaTime;
-                    
                     if (player.orbitRadius <= player.baseOrbitRadius) {
                         player.orbitRadius = player.baseOrbitRadius;
                         player.dashing = false;
                     }
                 }
             } else {
-                // Normal rotation
-                player.angle += player.rotationSpeed * deltaTime;
-                // Keep angle in [0, 2π] range
+                player.angle += player.rotationSpeed * player.rotationDirection * deltaTime;
                 if (player.angle > Math.PI * 2) player.angle -= Math.PI * 2;
+                if (player.angle < 0) player.angle += Math.PI * 2;
             }
             
-            // Update player position
             player.x = centerX + Math.cos(player.angle) * player.orbitRadius;
             player.y = centerY + Math.sin(player.angle) * player.orbitRadius;
             
-            // Update trail
+            // Trail
             for (let i = player.trail.length - 1; i >= 0; i--) {
                 player.trail[i].alpha -= deltaTime * 5;
-                if (player.trail[i].alpha <= 0) {
-                    player.trail.splice(i, 1);
-                }
+                if (player.trail[i].alpha <= 0) player.trail.splice(i, 1);
             }
             
-            // Update rings
+            // Rings
             for (let i = rings.length - 1; i >= 0; i--) {
-                rings[i].radius -= ringSpeed * deltaTime;
+                const ring = rings[i];
+                ring.radius -= config.ringSpeed * deltaTime;
                 
-                // Remove rings that passed through
-                if (rings[i].radius < 0) {
-                    rings.splice(i, 1);
+                // Shifting gaps
+                for (const gap of ring.gaps) {
+                    if (gap.shifting) {
+                        gap.angle += gap.shiftSpeed * deltaTime;
+                    }
                 }
+                
+                if (ring.radius < 0) rings.splice(i, 1);
             }
             
-            // Check collisions
             checkCollision();
         }
         
         function draw() {
-            ctx.save();
+            const theme = getTheme();
             
-            // Apply screen shake
+            ctx.save();
             ctx.translate(screenShake.x, screenShake.y);
             
-            // Clear
-            ctx.fillStyle = '#0a0a0a';
+            // Background
+            ctx.fillStyle = theme.bg;
             ctx.fillRect(-screenShake.x, -screenShake.y, width, height);
             
-            // Draw center glow
+            // Center glow
             const centerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, minDim * 0.15);
-            centerGradient.addColorStop(0, 'rgba(0, 255, 255, 0.1)');
-            centerGradient.addColorStop(1, 'rgba(0, 255, 255, 0)');
+            centerGradient.addColorStop(0, theme.primary.replace(')', ', 0.15)').replace('rgb', 'rgba').replace('#', 'rgba(').replace(/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, (m, r, g, b) => `${parseInt(r,16)}, ${parseInt(g,16)}, ${parseInt(b,16)}, 0.15`));
+            centerGradient.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = centerGradient;
             ctx.beginPath();
             ctx.arc(centerX, centerY, minDim * 0.15, 0, Math.PI * 2);
             ctx.fill();
             
-            // Draw orbit path (subtle)
+            // Orbit path
             if (gameState === 'playing' || gameState === 'countdown') {
-                ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)';
+                ctx.strokeStyle = `${theme.primary}25`;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, player.baseOrbitRadius, 0, Math.PI * 2);
                 ctx.stroke();
             }
             
-            // Draw rings
+            // Rings
             for (const ring of rings) {
                 ctx.lineWidth = ring.thickness;
                 
-                // Draw ring segments (avoiding gaps)
                 for (let startAngle = 0; startAngle < Math.PI * 2; startAngle += 0.05) {
                     let inGap = false;
                     
                     for (const gap of ring.gaps) {
                         let angleDiff = Math.abs(startAngle - gap.angle);
                         angleDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
-                        
                         if (angleDiff < gap.size / 2) {
                             inGap = true;
                             break;
@@ -652,24 +923,24 @@
                 ctx.shadowBlur = 0;
             }
             
-            // Draw particles
+            // Particles
             for (const p of particles) {
-                ctx.globalAlpha = p.life;
+                ctx.globalAlpha = Math.min(p.life, 1);
                 ctx.fillStyle = p.color;
                 ctx.shadowColor = p.color;
                 ctx.shadowBlur = 10;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius * p.life, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, p.radius * Math.min(p.life, 1), 0, Math.PI * 2);
                 ctx.fill();
             }
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
             
-            // Draw player trail
+            // Player trail
             for (const t of player.trail) {
                 ctx.globalAlpha = t.alpha * 0.5;
-                ctx.fillStyle = colors.cyan;
-                ctx.shadowColor = colors.cyan;
+                ctx.fillStyle = theme.primary;
+                ctx.shadowColor = theme.primary;
                 ctx.shadowBlur = 10;
                 ctx.beginPath();
                 ctx.arc(t.x, t.y, player.radius * t.alpha, 0, Math.PI * 2);
@@ -678,30 +949,24 @@
             ctx.globalAlpha = 1;
             ctx.shadowBlur = 0;
             
-            // Draw player
+            // Player
             if (gameState === 'playing' || gameState === 'countdown') {
-                // Outer glow
-                const playerGlow = ctx.createRadialGradient(
-                    player.x, player.y, 0,
-                    player.x, player.y, player.radius * 3
-                );
-                playerGlow.addColorStop(0, 'rgba(0, 255, 255, 0.5)');
-                playerGlow.addColorStop(0.5, 'rgba(0, 255, 255, 0.2)');
-                playerGlow.addColorStop(1, 'rgba(0, 255, 255, 0)');
+                const playerGlow = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, player.radius * 3);
+                playerGlow.addColorStop(0, `${theme.primary}80`);
+                playerGlow.addColorStop(0.5, `${theme.primary}33`);
+                playerGlow.addColorStop(1, `${theme.primary}00`);
                 ctx.fillStyle = playerGlow;
                 ctx.beginPath();
                 ctx.arc(player.x, player.y, player.radius * 3, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Main orb
-                ctx.fillStyle = colors.cyan;
-                ctx.shadowColor = colors.cyan;
+                ctx.fillStyle = theme.primary;
+                ctx.shadowColor = theme.primary;
                 ctx.shadowBlur = 20;
                 ctx.beginPath();
                 ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Inner highlight
                 ctx.fillStyle = '#ffffff';
                 ctx.shadowBlur = 0;
                 ctx.beginPath();
@@ -718,10 +983,8 @@
             requestAnimationFrame(gameLoop);
         }
         
-        // Initialize high score display
-        highScoreDisplay.textContent = `BEST: ${highScore.toFixed(2)}`;
-        
-        // Start game loop
+        // Initialize
+        highScoreDisplay.textContent = `BEST: Level ${highestLevel}`;
         requestAnimationFrame(gameLoop);
     </script>
 </body>
