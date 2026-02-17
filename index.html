@@ -423,10 +423,15 @@
             for (let i = rings.length - 1; i >= 0; i--) {
                 const ring = rings[i];
                 
-                // Check if ring reached center (death zone)
+                // Check if ring reached center (death zone) - only kills if you didn't pass through it
                 if (ring.radius <= player.baseOrbitRadius * 0.3) {
-                    die();
-                    return;
+                    if (!ring.passed) {
+                        die();
+                        return;
+                    }
+                    // Ring was passed, remove it safely
+                    rings.splice(i, 1);
+                    continue;
                 }
                 
                 // Check if player is dashing through this ring
