@@ -596,19 +596,19 @@
         let dailyCompleted = false;
         let dailyBestLevel = 0;
         
-        // Level definitions - FAST & FURIOUS, tons of gaps
+        // Level definitions - FAST & FURIOUS, tons of gaps (minGaps guarantees openings)
         const levels = [
             null,
-            { duration: 15, ringSpeed: 140, spawnInterval: 1.0, gapSize: 0.32, maxGaps: 5, rotationSpeed: 1.6, name: "Warm Up" },
-            { duration: 18, ringSpeed: 160, spawnInterval: 0.9, gapSize: 0.30, maxGaps: 5, rotationSpeed: 1.7, name: "Getting Started" },
-            { duration: 22, ringSpeed: 180, spawnInterval: 0.8, gapSize: 0.28, maxGaps: 6, rotationSpeed: 1.8, name: "Finding Rhythm" },
-            { duration: 26, ringSpeed: 200, spawnInterval: 0.75, gapSize: 0.26, maxGaps: 6, rotationSpeed: 1.9, reverseChance: 0.2, name: "Reversal" },
-            { duration: 30, ringSpeed: 220, spawnInterval: 0.7, gapSize: 0.24, maxGaps: 7, rotationSpeed: 2.0, reverseChance: 0.3, name: "Chaos" },
-            { duration: 32, ringSpeed: 240, spawnInterval: 0.65, gapSize: 0.22, maxGaps: 7, rotationSpeed: 2.1, reverseChance: 0.4, doubleRing: true, name: "Double Trouble" },
-            { duration: 34, ringSpeed: 260, spawnInterval: 0.6, gapSize: 0.20, maxGaps: 8, rotationSpeed: 2.2, reverseChance: 0.4, doubleRing: true, name: "Nightmare" },
-            { duration: 36, ringSpeed: 280, spawnInterval: 0.55, gapSize: 0.19, maxGaps: 8, rotationSpeed: 2.3, reverseChance: 0.5, doubleRing: true, shiftingGaps: true, name: "Impossible" },
-            { duration: 38, ringSpeed: 300, spawnInterval: 0.5, gapSize: 0.18, maxGaps: 9, rotationSpeed: 2.4, reverseChance: 0.5, doubleRing: true, shiftingGaps: true, name: "Legendary" },
-            { duration: 40, ringSpeed: 320, spawnInterval: 0.45, gapSize: 0.17, maxGaps: 10, rotationSpeed: 2.5, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "CLUTCH MASTER" }
+            { duration: 15, ringSpeed: 140, spawnInterval: 1.0, gapSize: 0.28, minGaps: 4, maxGaps: 6, rotationSpeed: 1.6, name: "Warm Up" },
+            { duration: 18, ringSpeed: 160, spawnInterval: 0.9, gapSize: 0.26, minGaps: 4, maxGaps: 6, rotationSpeed: 1.7, name: "Getting Started" },
+            { duration: 22, ringSpeed: 180, spawnInterval: 0.8, gapSize: 0.24, minGaps: 5, maxGaps: 7, rotationSpeed: 1.8, name: "Finding Rhythm" },
+            { duration: 26, ringSpeed: 200, spawnInterval: 0.75, gapSize: 0.22, minGaps: 5, maxGaps: 7, rotationSpeed: 1.9, reverseChance: 0.2, name: "Reversal" },
+            { duration: 30, ringSpeed: 220, spawnInterval: 0.7, gapSize: 0.20, minGaps: 5, maxGaps: 8, rotationSpeed: 2.0, reverseChance: 0.3, name: "Chaos" },
+            { duration: 32, ringSpeed: 240, spawnInterval: 0.65, gapSize: 0.18, minGaps: 6, maxGaps: 8, rotationSpeed: 2.1, reverseChance: 0.4, doubleRing: true, name: "Double Trouble" },
+            { duration: 34, ringSpeed: 260, spawnInterval: 0.6, gapSize: 0.17, minGaps: 6, maxGaps: 9, rotationSpeed: 2.2, reverseChance: 0.4, doubleRing: true, name: "Nightmare" },
+            { duration: 36, ringSpeed: 280, spawnInterval: 0.55, gapSize: 0.16, minGaps: 6, maxGaps: 9, rotationSpeed: 2.3, reverseChance: 0.5, doubleRing: true, shiftingGaps: true, name: "Impossible" },
+            { duration: 38, ringSpeed: 300, spawnInterval: 0.5, gapSize: 0.15, minGaps: 7, maxGaps: 10, rotationSpeed: 2.4, reverseChance: 0.5, doubleRing: true, shiftingGaps: true, name: "Legendary" },
+            { duration: 40, ringSpeed: 320, spawnInterval: 0.45, gapSize: 0.14, minGaps: 7, maxGaps: 10, rotationSpeed: 2.5, reverseChance: 0.6, doubleRing: true, shiftingGaps: true, name: "CLUTCH MASTER" }
         ];
         
         const levelThemes = [
@@ -850,9 +850,11 @@
         function spawnRing() {
             const config = getLevelConfig();
             const theme = getTheme();
-            const numGaps = 1 + Math.floor(rng() * config.maxGaps);
+            const minG = config.minGaps || 3;
+            const maxG = config.maxGaps || 6;
+            const numGaps = minG + Math.floor(rng() * (maxG - minG + 1));
             const gaps = [];
-            const gapSize = Math.PI * config.gapSize + rng() * Math.PI * 0.05;
+            const gapSize = Math.PI * config.gapSize + rng() * Math.PI * 0.03;
             
             for (let i = 0; i < numGaps; i++) {
                 let gapAngle, valid = false, attempts = 0;
